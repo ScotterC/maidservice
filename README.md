@@ -1,6 +1,6 @@
 # Maidservice
 
-TODO: Write a gem description
+Distributed Page Cache Clearing using Redis pub/sub
 
 ## Installation
 
@@ -18,7 +18,15 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Maidservice will need to be run as a daemon to listen for page expiring events.
+
+    $ rake maidservice:clean
+
+It hooks into the existing `expire_page` logic and make sure that all servers running maidservice will also expire those pages.
+
+You can also expire folders and files directly by calling
+
+    MaidService.clear "page/path/to/clear"
 
 ## Contributing
 
