@@ -37,10 +37,10 @@ module Maidservice
       # never gets here.
     end
 
-    # TODO: duplicate of rails expire_page
+    # TODO: scary powerful.  Protect against bad ideas
     def self.clear_page(full_path)
       return unless ActionController::Base.perform_caching
-      File.delete(full_path) if File.exist?(full_path)
+      FileUtils.rm_rf(full_path) if File.exist?(full_path)
       File.delete(full_path + '.gz') if File.exist?(full_path + '.gz')
     end
 
