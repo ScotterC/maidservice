@@ -3,3 +3,6 @@
 * build active support notification listener
 * build clean directive
 * make sure there's appropriate logging
+
+* Connecting to a redis connection in app
+* Connecting to a redis connection in daemon

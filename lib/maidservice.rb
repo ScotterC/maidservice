@@ -1,44 +1,27 @@
-require "maidservice/version"
+require 'maidservice/configuration'
+require "maidservice/listener"
+require 'maidservice/railtie'
 require 'redis'
 
 module Maidservice
-
-  def self.run
-    $0 = "cache-sweeper: Starting"
-
-    # trap signals
-    # register_signal_handlers
-
-    # Quote from the resque/worker.
-    # Fix buffering so we can `rake resque:scheduler > scheduler.log` and
-    # get output from the child in there.
-    $stdout.sync = true
-    $stderr.sync = true
-
-    redis = ::Redis.new
-
-    begin
-      redis.subscribe('pages.expire') do |on|
-        on.subscribe do |channel, subscriptions|
-          puts "Subscribed to ##{channel} (#{subscriptions} subscriptions)"
-        end
-
-        on.message do |channel, message|
-          puts "##{channel}: #{message}"
-          redis.unsubscribe if message == "exit"
-        end
-
-        on.unsubscribe do |channel, subscriptions|
-          puts "Unsubscribed from ##{channel} (#{subscriptions} subscriptions)"
-        end
-      end
-    rescue ::Redis::BaseConnectionError => error
-      puts "#{error}, retrying in 1s"
-      sleep 1
-      retry
+  class << self
+    def redis
+      Maidservice.configuration.redis
     end
 
-    # never gets here.
+    # Publishing to redis
+    # Playing with fire here
+    def clear(full_path)
+      redis.publish('expire_page.action_controller', full_path)
+    end
+
+    # Delegate the active support notifications
+    def subscribe
+      ActiveSupport::Notifications.subscribe('expire_page.action_controller') do |*args|
+        event = ActiveSupport::Notifications::Event.new *args
+        Maidservice.clear(event.payload[:path])
+      end
+    end
   end
 
 end
