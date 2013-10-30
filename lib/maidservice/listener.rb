@@ -3,6 +3,12 @@ module Maidservice
 
     # Daemon that runs and listens
     def self.run
+
+      Signal.trap("INT") do |sig|
+        puts "#{Signal.signame(sig)} recevied"
+        exit 0   
+      end
+
       $0 = "Maidservice: Starting"
 
       # get output from the child in there.
