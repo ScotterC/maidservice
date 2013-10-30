@@ -5,7 +5,7 @@ module Maidservice
     def self.run
 
       Signal.trap("INT") do |sig|
-        puts "#{Signal.signame(sig)} recevied"
+        log.error "#{Signal.signame(sig)} recevied"
         exit 0   
       end
 
