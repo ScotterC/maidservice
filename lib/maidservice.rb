@@ -1,5 +1,4 @@
 require 'maidservice/configuration'
-require "maidservice/listener"
 require 'maidservice/railtie'
 require 'redis'
 

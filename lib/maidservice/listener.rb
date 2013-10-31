@@ -3,10 +3,7 @@ module Maidservice
 
     # Daemon that runs and listens
     def self.run
-
-      Signal.trap("INT") do |sig|
-        exit 0   
-      end
+      trap("INT") { exit }
 
       $0 = "Maidservice: Starting"
 
