@@ -3,7 +3,7 @@ module Maidservice
 
     # Daemon that runs and listens
     def self.run
-      trap("INT") { exit }
+      trap("TERM") { exit }
 
       $0 = "Maidservice: Starting"
 
